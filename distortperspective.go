@@ -1,4 +1,4 @@
-package libvips
+package imageref
 
 import (
 	"github.com/davidbyttow/govips/v2/vips"
@@ -171,13 +171,17 @@ func divide(enumerator, denominator *vips.ImageRef) (*vips.ImageRef, error) {
 // Calculates coefficients of perspective transformation
 // which maps (xi,yi) to (ui,vi), (i=1,2,3,4):
 //
-//      c00*xi + c01*yi + c02
-// ui = ---------------------
-//      c20*xi + c21*yi + c22
+//	c00*xi + c01*yi + c02
 //
-//      c10*xi + c11*yi + c12
+// ui = ---------------------
+//
+//	c20*xi + c21*yi + c22
+//
+//	c10*xi + c11*yi + c12
+//
 // vi = ---------------------
-//      c20*xi + c21*yi + c22
+//
+//	c20*xi + c21*yi + c22
 //
 // Coefficients are calculated by solving the linear system:
 // / x0 y0  1  0  0  0 -x0*u0 -y0*u0 \ /c00\ /u0\

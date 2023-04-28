@@ -1,6 +1,6 @@
-package composite
+package imageref
 
-type Mode int
+type Composite int
 
 const (
 	DestIn = iota

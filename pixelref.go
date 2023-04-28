@@ -1,4 +1,4 @@
-package libvips
+package imageref
 
 import (
 	"github.com/lucasb-eyer/go-colorful"

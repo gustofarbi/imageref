@@ -1,12 +1,8 @@
-package libvips
+package imageref
 
 import (
 	"github.com/davidbyttow/govips/v2/vips"
 	"github.com/lucasb-eyer/go-colorful"
-	"github.com/myposter-de/imageref/constant/format"
-	"github.com/myposter-de/imageref/processor"
-	"github.com/myposter-de/imageref/processor/colorspace"
-	"github.com/myposter-de/imageref/processor/composite"
 	"math"
 	"os"
 )
@@ -36,7 +32,7 @@ func (i *ImageRef) Write(path string) error {
 	return os.WriteFile(path, data, os.ModePerm)
 }
 
-func (i *ImageRef) Compare(reference processor.ImageObject) (float64, error) {
+func (i *ImageRef) Compare(reference ImageObject) (float64, error) {
 	c, err := i.ref.Copy()
 	if err != nil {
 		return 0, err
@@ -84,16 +80,16 @@ func (i *ImageRef) Export(outputFormat string) ([]byte, error) {
 	var err error
 
 	switch outputFormat {
-	case format.Jpg:
+	case Jpg:
 		result, _, err = i.ref.ExportJpeg(vips.NewJpegExportParams())
-	case format.WebP:
+	case WebP:
 		result, _, err = i.ref.ExportWebp(&vips.WebpExportParams{
 			StripMetadata:   false,
 			Quality:         75,
 			Lossless:        false,
 			ReductionEffort: 0,
 		})
-	case format.Png:
+	case Png:
 		fallthrough
 	default:
 		result, _, err = i.ref.ExportPng(vips.NewPngExportParams())
@@ -115,7 +111,7 @@ func (i *ImageRef) Color(color colorful.Color) error {
 	return i.ref.Linear([]float64{0, 0, 0, 0}, []float64{float64(r), float64(g), float64(b), math.MaxUint8})
 }
 
-func (i *ImageRef) Tint(tint processor.PixelObject) error {
+func (i *ImageRef) Tint(tint PixelObject) error {
 	var err error
 	err = i.ref.ToColorSpace(vips.InterpretationRGB16)
 	if err != nil {
@@ -186,22 +182,22 @@ func (i *ImageRef) Contrast(factor float64) error {
 	return r.Linear([]float64{a, a, a, 1}, []float64{b, b, b, 0})
 }
 
-func (i *ImageRef) TransformColorspace(t colorspace.Type) error {
+func (i *ImageRef) TransformColorspace(t ColorspaceType) error {
 	return i.ref.ToColorSpace(parseVipsColorspace(t))
 }
 
-func parseVipsColorspace(c colorspace.Type) vips.Interpretation {
+func parseVipsColorspace(c ColorspaceType) vips.Interpretation {
 	switch c {
-	case colorspace.SRGB:
+	case SRGB:
 		return vips.InterpretationSRGB
-	case colorspace.Gray:
+	case Gray:
 		return vips.InterpretationGrey16
 	default:
 		return 0
 	}
 }
 
-func (i *ImageRef) Clone() (processor.ImageObject, error) {
+func (i *ImageRef) Clone() (ImageObject, error) {
 	c, err := i.ref.Copy()
 	if err != nil {
 		return nil, err
@@ -231,17 +227,17 @@ func (i *ImageRef) Height() uint {
 	return uint(i.ref.Height())
 }
 
-func (i *ImageRef) Composite(overlay processor.ImageObject, mode composite.Mode) error {
+func (i *ImageRef) Composite(overlay ImageObject, mode Composite) error {
 	return i.ref.Composite(overlay.(*ImageRef).ref, blendMode(mode), 0, 0)
 }
 
-func blendMode(mode composite.Mode) vips.BlendMode {
+func blendMode(mode Composite) vips.BlendMode {
 	switch mode {
-	case composite.DestIn:
+	case DestIn:
 		return vips.BlendModeDestIn
-	case composite.Over:
+	case Over:
 		return vips.BlendModeOver
-	case composite.DestOver:
+	case DestOver:
 		return vips.BlendModeDestOver
 	default:
 		return 0
@@ -279,7 +275,7 @@ func (i *ImageRef) Import(bytes []byte) error {
 	return nil
 }
 
-func (i *ImageRef) CopyTransparency(overlay processor.ImageObject) error {
+func (i *ImageRef) CopyTransparency(overlay ImageObject) error {
 	overlayVips := overlay.(*ImageRef).ref
 	baseTransparency, err := i.ref.Copy()
 	if err != nil {

@@ -1,9 +1,7 @@
-package processor
+package imageref
 
 import (
 	"github.com/lucasb-eyer/go-colorful"
-	"github.com/myposter-de/imageref/processor/colorspace"
-	"github.com/myposter-de/imageref/processor/composite"
 )
 
 type ImageObject interface {
@@ -11,12 +9,12 @@ type ImageObject interface {
 	Width() uint
 	Resize(width uint, height uint) error
 	DistortPerspective(distortion []float64) error
-	Composite(node ImageObject, mode composite.Mode) error
+	Composite(node ImageObject, mode Composite) error
 	Height() uint
 	HasImage() bool
 	Negate() error
 	Clone() (ImageObject, error)
-	TransformColorspace(t colorspace.Type) error
+	TransformColorspace(t ColorspaceType) error
 	AdjustLightness(modifier float64) error
 	Contrast(modifier float64) error
 	Tint(tint PixelObject) error

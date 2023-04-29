@@ -6,4 +6,5 @@ const (
 	DestIn = iota
 	Over
 	DestOver
+	Multiply
 )

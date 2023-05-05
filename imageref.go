@@ -239,6 +239,8 @@ func blendMode(mode Composite) vips.BlendMode {
 		return vips.BlendModeOver
 	case DestOver:
 		return vips.BlendModeDestOver
+	case Multiply:
+		return vips.BlendModeMultiply
 	default:
 		return 0
 	}

@@ -1,4 +1,4 @@
-module github.com/gustofarbi/imageref
+module github.com/myposter-de/imageref
 
 go 1.20
 

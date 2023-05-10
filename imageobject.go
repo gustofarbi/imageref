@@ -29,4 +29,5 @@ type ImageObject interface {
 	Color(color colorful.Color) error
 	Thumbnail(width int) error
 	Close()
+	SetImageRef(another ImageObject)
 }

@@ -326,3 +326,7 @@ func (i *ImageRef) Thumbnail(width int) error {
 func (i *ImageRef) Close() {
 	i.ref.Close()
 }
+
+func (i *ImageRef) SetImageRef(another ImageObject) {
+	i.ref = another.(*ImageRef).ref
+}

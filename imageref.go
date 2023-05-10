@@ -220,7 +220,7 @@ func (i *ImageRef) Negate() error {
 }
 
 func (i *ImageRef) HasImage() bool {
-	return i.ref.Width() != 0
+	return i.ref == nil || i.ref.Width() != 0
 }
 
 func (i *ImageRef) Height() uint {

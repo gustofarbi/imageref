@@ -2,6 +2,7 @@ package imageref
 
 import (
 	"github.com/lucasb-eyer/go-colorful"
+	"image/color"
 )
 
 type ImageObject interface {
@@ -17,7 +18,7 @@ type ImageObject interface {
 	TransformColorspace(t ColorspaceType) error
 	AdjustLightness(modifier float64) error
 	Contrast(modifier float64) error
-	Tint(tint PixelObject) error
+	Tint(tint color.Color) error
 	AddAlpha() error
 	Export(format string) ([]byte, error)
 	ImportFile(path string) error

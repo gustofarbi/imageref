@@ -26,3 +26,7 @@ func (p *PixelRef) AdjustSaturation(factor float64) {
 	s *= factor
 	p.Color = colorful.Hsl(h, s, l)
 }
+
+func (p *PixelRef) RGBA() (r, g, b, a uint32) {
+	return p.Color.RGBA()
+}

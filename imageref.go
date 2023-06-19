@@ -3,6 +3,7 @@ package imageref
 import (
 	"github.com/davidbyttow/govips/v2/vips"
 	"github.com/lucasb-eyer/go-colorful"
+	"image/color"
 	"math"
 	"os"
 )
@@ -111,7 +112,7 @@ func (i *ImageRef) Color(color colorful.Color) error {
 	return i.ref.Linear([]float64{0, 0, 0, 0}, []float64{float64(r), float64(g), float64(b), math.MaxUint8})
 }
 
-func (i *ImageRef) Tint(tint PixelObject) error {
+func (i *ImageRef) Tint(tint color.Color) error {
 	var err error
 	err = i.ref.ToColorSpace(vips.InterpretationRGB16)
 	if err != nil {
@@ -137,8 +138,7 @@ func (i *ImageRef) Tint(tint PixelObject) error {
 	if err != nil {
 		return err
 	}
-	t := tint.(*PixelRef).Color
-	r, g, b, _ := t.RGBA()
+	r, g, b, _ := tint.RGBA()
 	err = tintRef.Linear([]float64{0, 0, 0}, []float64{float64(r), float64(g), float64(b)})
 	if err != nil {
 		return err

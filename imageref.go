@@ -103,6 +103,17 @@ func (i *ImageRef) Export(outputFormat string) ([]byte, error) {
 	return result, nil
 }
 
+func (i *ImageRef) ExportWebp(params WebpExportParams) ([]byte, error) {
+	buf, _, err := i.ref.ExportWebp(&vips.WebpExportParams{
+		StripMetadata:   params.StripMetadata,
+		Quality:         params.Quality,
+		Lossless:        params.Lossless,
+		ReductionEffort: params.ReductionEffort,
+	})
+
+	return buf, err
+}
+
 func (i *ImageRef) AddAlpha() error {
 	return i.ref.AddAlpha()
 }

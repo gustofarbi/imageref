@@ -84,11 +84,11 @@ func (i *ImageRef) Export(outputFormat string) ([]byte, error) {
 	case Jpg:
 		result, _, err = i.ref.ExportJpeg(vips.NewJpegExportParams())
 	case WebP:
-		result, _, err = i.ref.ExportWebp(&vips.WebpExportParams{
-			StripMetadata:   false,
-			Quality:         75,
+		result, err = i.ExportWebp(WebpExportParams{
+			StripMetadata:   true,
+			Quality:         80,
 			Lossless:        false,
-			ReductionEffort: 0,
+			ReductionEffort: 4,
 		})
 	case Png:
 		fallthrough

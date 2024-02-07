@@ -84,12 +84,7 @@ func (i *ImageRef) Export(outputFormat string) ([]byte, error) {
 	case Jpg:
 		result, _, err = i.ref.ExportJpeg(vips.NewJpegExportParams())
 	case WebP:
-		result, err = i.ExportWebp(WebpExportParams{
-			StripMetadata:   true,
-			Quality:         80,
-			Lossless:        false,
-			ReductionEffort: 4,
-		})
+		result, _, err = i.ref.ExportWebp(vips.NewWebpExportParams())
 	case Png:
 		fallthrough
 	default:
@@ -103,15 +98,59 @@ func (i *ImageRef) Export(outputFormat string) ([]byte, error) {
 	return result, nil
 }
 
-func (i *ImageRef) ExportWebp(params WebpExportParams) ([]byte, error) {
-	buf, _, err := i.ref.ExportWebp(&vips.WebpExportParams{
-		StripMetadata:   params.StripMetadata,
-		Quality:         params.Quality,
-		Lossless:        params.Lossless,
-		ReductionEffort: params.ReductionEffort,
-	})
+func (i *ImageRef) ExportWithParams(outputFormat string, params ExportParams) ([]byte, error) {
+	var result []byte
+	var err error
 
-	return buf, err
+	switch outputFormat {
+	case Jpg:
+		result, _, err = i.ref.ExportJpeg(
+			&vips.JpegExportParams{
+				StripMetadata:      params.StripMetadata,
+				Quality:            params.Quality,
+				Interlace:          params.Interlace,
+				OptimizeCoding:     params.OptimizeCoding,
+				SubsampleMode:      params.SubsampleMode,
+				TrellisQuant:       params.TrellisQuant,
+				OvershootDeringing: params.OvershootDeringing,
+				OptimizeScans:      params.OptimizeScans,
+				QuantTable:         params.QuantTable,
+			},
+		)
+	case WebP:
+		result, _, err = i.ref.ExportWebp(
+			&vips.WebpExportParams{
+				StripMetadata:   params.StripMetadata,
+				Quality:         params.Quality,
+				Lossless:        params.Lossless,
+				NearLossless:    params.NearLossless,
+				ReductionEffort: params.ReductionEffort,
+				IccProfile:      params.Profile,
+			},
+		)
+	case Png:
+		fallthrough
+	default:
+		result, _, err = i.ref.ExportPng(
+			&vips.PngExportParams{
+				StripMetadata: params.StripMetadata,
+				Compression:   params.Compression,
+				Filter:        params.Filter,
+				Interlace:     params.Interlace,
+				Quality:       params.Quality,
+				Palette:       params.Palette,
+				Dither:        params.Dither,
+				Bitdepth:      params.Bitdepth,
+				Profile:       params.Profile,
+			},
+		)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 func (i *ImageRef) AddAlpha() error {

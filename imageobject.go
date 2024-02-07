@@ -31,5 +31,4 @@ type ImageObject interface {
 	Thumbnail(width int) error
 	Close()
 	SetImageRef(another ImageObject)
-	ExportWebp(params WebpExportParams) ([]byte, error)
 }

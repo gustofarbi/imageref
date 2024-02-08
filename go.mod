@@ -1,4 +1,4 @@
-module github.com/myposter-de/imageref
+module github.com/myposter-de/imageref/v2
 
 go 1.20
 

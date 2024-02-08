@@ -9,6 +9,10 @@ type PixelRef struct {
 	Color color.Color
 }
 
+func NewPixel() *PixelRef {
+	return &PixelRef{}
+}
+
 func (p *PixelRef) SetColor(c color.Color) {
 	p.Color = c
 }

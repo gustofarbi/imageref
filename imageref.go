@@ -8,11 +8,24 @@ import (
 	"os"
 )
 
+const LinearPrecision = 0.001
+
+func init() {
+	vips.LoggingSettings(nil, vips.LogLevelError)
+	vips.Startup(&vips.Config{ReportLeaks: true})
+}
+
+func NewImage() *ImageRef {
+	return &ImageRef{}
+}
+
 type ImageRef struct {
 	ref *vips.ImageRef
 }
 
-const LinearPrecision = 0.001
+func (i *ImageRef) Ref() *vips.ImageRef {
+	return i.ref
+}
 
 func (i *ImageRef) AdjustChroma(m float64) error {
 	if math.Abs(m-1) < LinearPrecision {
@@ -33,12 +46,12 @@ func (i *ImageRef) Write(path string) error {
 	return os.WriteFile(path, data, os.ModePerm)
 }
 
-func (i *ImageRef) Compare(reference ImageObject) (float64, error) {
+func (i *ImageRef) Compare(reference *ImageRef) (float64, error) {
 	c, err := i.ref.Copy()
 	if err != nil {
 		return 0, err
 	}
-	ref := reference.(*ImageRef).ref
+	ref := reference.ref
 	cref, err := ref.Copy()
 	if err != nil {
 		return 0, err
@@ -117,7 +130,6 @@ func (i *ImageRef) ExportWebp(params WebpExportParams) ([]byte, error) {
 func (i *ImageRef) AddAlpha() error {
 	return i.ref.AddAlpha()
 }
-
 func (i *ImageRef) Color(color colorful.Color) error {
 	r, g, b := color.RGB255()
 	return i.ref.Linear([]float64{0, 0, 0, 0}, []float64{float64(r), float64(g), float64(b), math.MaxUint8})
@@ -208,7 +220,7 @@ func parseVipsColorspace(c ColorspaceType) vips.Interpretation {
 	}
 }
 
-func (i *ImageRef) Clone() (ImageObject, error) {
+func (i *ImageRef) Clone() (*ImageRef, error) {
 	c, err := i.ref.Copy()
 	if err != nil {
 		return nil, err
@@ -238,8 +250,8 @@ func (i *ImageRef) Height() uint {
 	return uint(i.ref.Height())
 }
 
-func (i *ImageRef) Composite(overlay ImageObject, mode Composite) error {
-	return i.ref.Composite(overlay.(*ImageRef).ref, blendMode(mode), 0, 0)
+func (i *ImageRef) Composite(overlay *ImageRef, mode Composite) error {
+	return i.ref.Composite(overlay.ref, blendMode(mode), 0, 0)
 }
 
 func blendMode(mode Composite) vips.BlendMode {
@@ -288,8 +300,8 @@ func (i *ImageRef) Import(bytes []byte) error {
 	return nil
 }
 
-func (i *ImageRef) CopyTransparency(overlay ImageObject) error {
-	overlayVips := overlay.(*ImageRef).ref
+func (i *ImageRef) CopyTransparency(overlay *ImageRef) error {
+	overlayVips := overlay.ref
 	baseTransparency, err := i.ref.Copy()
 	if err != nil {
 		return err
@@ -338,6 +350,6 @@ func (i *ImageRef) Close() {
 	i.ref.Close()
 }
 
-func (i *ImageRef) SetImageRef(another ImageObject) {
-	i.ref = another.(*ImageRef).ref
+func (i *ImageRef) SetImageRef(another *ImageRef) {
+	i.ref = another.ref
 }

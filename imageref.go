@@ -76,6 +76,7 @@ func (i *ImageRef) ImportFile(path string) error {
 	return nil
 }
 
+// Deprecated: use ExportWithParams instead
 func (i *ImageRef) Export(outputFormat string) ([]byte, error) {
 	var result []byte
 	var err error
@@ -91,14 +92,10 @@ func (i *ImageRef) Export(outputFormat string) ([]byte, error) {
 		result, _, err = i.ref.ExportPng(vips.NewPngExportParams())
 	}
 
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
+	return result, err
 }
 
-func (i *ImageRef) ExportWithParams(outputFormat string, params ExportParams) ([]byte, error) {
+func (i *ImageRef) ExportWithParams(outputFormat string, params *ExportParams) ([]byte, error) {
 	var result []byte
 	var err error
 
@@ -146,11 +143,7 @@ func (i *ImageRef) ExportWithParams(outputFormat string, params ExportParams) ([
 		)
 	}
 
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
+	return result, err
 }
 
 func (i *ImageRef) AddAlpha() error {

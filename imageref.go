@@ -346,6 +346,17 @@ func (i *ImageRef) Thumbnail(width int) error {
 	return i.ref.Thumbnail(width, 0, vips.InterestingAll)
 }
 
+// ThumbnailMost makes a thumbnail of image, where the longer side is at most width pixels
+func (i *ImageRef) ThumbnailMost(width int) error {
+	ratio := float64(i.Width()) / float64(i.Height())
+
+	if ratio > 1 {
+		return i.ref.Thumbnail(width, int(float64(width)/ratio), vips.InterestingAll)
+	}
+
+	return i.ref.Thumbnail(int(float64(width)*ratio), width, vips.InterestingAll)
+}
+
 func (i *ImageRef) Close() {
 	i.ref.Close()
 }

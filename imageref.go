@@ -364,3 +364,7 @@ func (i *ImageRef) Close() {
 func (i *ImageRef) SetImageRef(another *ImageRef) {
 	i.ref = another.ref
 }
+
+func (i *ImageRef) SetImage(im *vips.ImageRef) {
+	i.ref = im
+}

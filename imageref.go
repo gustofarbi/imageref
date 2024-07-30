@@ -287,6 +287,15 @@ func (i *ImageRef) Resize(width uint, height uint) error {
 	return nil
 }
 
+func (i *ImageRef) Scale(ratio float64, kernelToUse ...vips.Kernel) error {
+	kernel := vips.KernelAuto
+	if len(kernelToUse) > 0 {
+		kernel = kernelToUse[0]
+	}
+
+	return i.ref.Resize(ratio, kernel)
+}
+
 func (i *ImageRef) Width() uint {
 	return uint(i.ref.Width())
 }

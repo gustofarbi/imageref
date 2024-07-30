@@ -40,3 +40,20 @@ func TestImageRef_ThumbnailMost(t *testing.T) {
 		t.Fatalf("Expected thumbnail to be at most 8px, got %dx%d", imageRef.Width(), imageRef.Height())
 	}
 }
+
+func TestImageRef_Scale(t *testing.T) {
+	vipsImage, err := vips.Black(10, 5)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	imageRef := &ImageRef{ref: vipsImage}
+	err = imageRef.Scale(2)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if imageRef.Width() != 20 || imageRef.Height() != 10 {
+		t.Fatalf("Expected image to be scaled to 20x10, got %dx%d", imageRef.Width(), imageRef.Height())
+	}
+}
